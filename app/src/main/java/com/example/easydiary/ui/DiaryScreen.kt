@@ -49,6 +49,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.easydiary.data.DiaryEntry
+// **导入新颜色**
+import com.example.easydiary.ui.theme.ChartMood
+import com.example.easydiary.ui.theme.ChartWork
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneOffset
@@ -64,13 +67,11 @@ import androidx.compose.material3.rememberDatePickerState
 
 // **Bug 修复：添加 LazyColumn 和 item 的导入**
 import androidx.compose.foundation.lazy.LazyColumn
-//import androidx.compose.foundation.lazy.item // **<-- 修复 1：重新添加 item 导入**
 
 
 // --- 1. 导航入口 (签名已完全更新) ---
 @Composable
 fun AppNavigation(
-// ... (代码未更改) ...
     uiState: DiaryUiState,
     allEntriesASC: List<DiaryEntry>,
     selectedDate: LocalDate,
@@ -109,7 +110,6 @@ fun AppNavigation(
                     allEntries = allEntriesASC
                 )
                 NavigationState.EDITOR -> DiaryEditorScreen(
-// ... (代码未更改) ...
                     entry = uiState.currentEntry,
                     selectedDate = selectedDate,
                     onSave = onSave,
@@ -117,7 +117,6 @@ fun AppNavigation(
                     onDateChanged = onEditorDateChange
                 )
                 NavigationState.VIEWER -> DiaryViewerScreen(
-// ... (代码未更改) ...
                     entry = uiState.currentEntry,
                     selectedDate = selectedDate,
                     onEdit = { onNavigate(NavigationState.EDITOR) },
@@ -128,13 +127,11 @@ fun AppNavigation(
                     onDelete = onDelete
                 )
                 NavigationState.QUERY -> QueryListScreen(
-// ... (代码未更改) ...
                     queryType = uiState.queryType,
                     entries = uiState.queryResults,
                     onEntryClick = onDateSelected
                 )
                 NavigationState.CURVE -> CurveScreen(
-// ... (代码未更改) ...
                     entries = allEntriesASC,
                     onDateSelected = onDateSelected
                 )
@@ -146,13 +143,11 @@ fun AppNavigation(
 // --- 2. 底部导航栏 (修改：新图标) ---
 @Composable
 fun BottomNavigationBar(
-// ... (代码未更改) ...
     currentScreen: NavigationState,
     onNavigate: (NavigationState) -> Unit,
     onQuery: (QueryType) -> Unit
 ) {
     val navItems = listOf(
-        // **修改：更新图标**
         BottomNavItem("日历", Icons.Default.CalendarMonth, NavigationState.CALENDAR),
         BottomNavItem("学习", Icons.Default.Book, QueryType.STUDY), // 书本
         BottomNavItem("生活", Icons.Default.FilterVintage, QueryType.LIFE), // 花朵
@@ -183,7 +178,6 @@ fun BottomNavigationBar(
     }
 }
 private data class BottomNavItem(
-// ... (代码未更改) ...
     val label: String,
     val icon: androidx.compose.ui.graphics.vector.ImageVector,
     val navTarget: Any
@@ -193,7 +187,6 @@ private data class BottomNavItem(
 // --- 3. 主页：日历 (修改：手势滑动) ---
 @Composable
 fun CalendarScreen(
-// ... (代码未更改) ...
     selectedDate: LocalDate,
     onDateSelected: (LocalDate) -> Unit,
     allEntries: List<DiaryEntry>
@@ -205,14 +198,12 @@ fun CalendarScreen(
 
     var currentMonth by remember { mutableStateOf(YearMonth.from(selectedDate)) }
 
-    // **新增：手势检测状态**
     var dragAmountX by remember { mutableStateOf(0f) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            // **新增：手势检测**
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = { dragAmountX = 0f },
@@ -232,7 +223,6 @@ fun CalendarScreen(
     ) {
 
         // --- 月份切换器 ---
-// ... (代码未更改) ...
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -249,7 +239,6 @@ fun CalendarScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // --- 星期标题 ---
-// ... (代码未更改) ...
         Row(modifier = Modifier.fillMaxWidth()) {
             val days = listOf("日", "一", "二", "三", "四", "五", "六")
             days.forEach {
@@ -265,7 +254,6 @@ fun CalendarScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         // --- 日期网格 ---
-// ... (代码未更改) ...
         val daysInMonth = currentMonth.lengthOfMonth()
         val firstDayOfWeek = currentMonth.atDay(1).dayOfWeek.value % 7 // 星期一=1, 星期日=0
 
@@ -283,9 +271,9 @@ fun CalendarScreen(
 
                 CalendarDayCell(
                     day = day,
-                    isSelected = date == selectedDate, // **新增：标记选中日期**
+                    isSelected = date == selectedDate,
                     entry = entry,
-                    onClick = { onDateSelected(date) } // **修改：点击即导航**
+                    onClick = { onDateSelected(date) }
                 )
             }
         }
@@ -295,7 +283,6 @@ fun CalendarScreen(
 // --- 日历单元格 (修改：选中状态) ---
 @Composable
 fun CalendarDayCell(
-// ... (代码未更改) ...
     day: Int,
     isSelected: Boolean,
     entry: DiaryEntry?,
@@ -337,7 +324,6 @@ fun CalendarDayCell(
 }
 
 fun getMoodColor(score: Int): Color {
-// ... (代码未更改) ...
     return when (score) {
         in 1..4 -> Color(0xFFE57373) // 红
         in 5..7 -> Color(0xFFFFF176) // 黄
@@ -347,10 +333,9 @@ fun getMoodColor(score: Int): Color {
 }
 
 
-// --- 4. 日记编辑页 (修改：工作时长滑动条) ---
+// --- 4. 日记编辑页 (修改：淡黄色背景) ---
 @Composable
 fun DiaryEditorScreen(
-// ... (代码未更改) ...
     entry: DiaryEntry?,
     selectedDate: LocalDate,
     onSave: (DiaryEntry) -> Unit,
@@ -362,7 +347,6 @@ fun DiaryEditorScreen(
     var studyLog by remember(entry) { mutableStateOf(entry?.studyLog ?: "") }
     var miscLog by remember(entry) { mutableStateOf(entry?.miscLog ?: "") }
     var moodScore by remember(entry) { mutableStateOf(entry?.moodScore ?: 5) }
-    // **修改：工作时长现在是 Float**
     var workDuration by remember(entry) { mutableStateOf(entry?.workDuration ?: 0.0f) }
 
     Scaffold(
@@ -400,6 +384,8 @@ fun DiaryEditorScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                // **修改2：应用淡黄色背景 (来自 Theme.kt)**
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState()),
@@ -407,7 +393,6 @@ fun DiaryEditorScreen(
         ) {
 
             if (showDatePicker) {
-// ... (代码未更改) ...
                 val datePickerState = rememberDatePickerState(
                     initialSelectedDateMillis = selectedDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
                 )
@@ -435,7 +420,6 @@ fun DiaryEditorScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-// ... (代码未更改) ...
             LogInput(
                 title = "生活 (可留空)",
                 content = lifeLog,
@@ -452,15 +436,12 @@ fun DiaryEditorScreen(
                 onContentChange = { miscLog = it }
             )
             Spacer(modifier = Modifier.height(24.dp))
-// ... (代码未更改) ...
             MoodScoreSelector(
                 score = moodScore,
                 onScoreChange = { moodScore = it }
             )
             Spacer(modifier = Modifier.height(24.dp))
 
-            // **修改：使用新的工作时长滑动条**
-// ... (代码未更改) ...
             WorkDurationSlider(
                 duration = workDuration,
                 onDurationChange = { workDuration = it }
@@ -472,7 +453,6 @@ fun DiaryEditorScreen(
 // --- 5. 日记查看页 (修改：新增删除按钮) ---
 @Composable
 fun DiaryViewerScreen(
-// ... (代码未更改) ...
     entry: DiaryEntry?,
     selectedDate: LocalDate,
     onEdit: () -> Unit,
@@ -480,11 +460,9 @@ fun DiaryViewerScreen(
     onExport: () -> Unit,
     onSwipeNext: () -> Unit,
     onSwipePrevious: () -> Unit,
-    onDelete: (LocalDate) -> Unit // **新增：删除回调**
+    onDelete: (LocalDate) -> Unit
 ) {
-    // **新增：删除确认对话框**
     var showDeleteDialog by remember { mutableStateOf(false) }
-// ... (代码未更改) ...
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -507,7 +485,6 @@ fun DiaryViewerScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-// ... (代码未更改) ...
                 title = { Text(entry?.date ?: selectedDate.format(DateTimeFormatter.ISO_LOCAL_DATE)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -516,8 +493,6 @@ fun DiaryViewerScreen(
                 },
                 actions = {
                     if (entry != null) {
-                        // **新增：删除按钮**
-// ... (代码未更改) ...
                         IconButton(onClick = { showDeleteDialog = true }) {
                             Icon(Icons.Default.Delete, "删除")
                         }
@@ -558,7 +533,6 @@ fun DiaryViewerScreen(
                 }
         ) {
             if (entry == null) {
-// ... (代码未更改) ...
                 Text(
                     text = "该日暂无记录。",
                     style = MaterialTheme.typography.headlineMedium,
@@ -572,7 +546,6 @@ fun DiaryViewerScreen(
                     Text(text = "去添加记录")
                 }
             } else {
-// ... (代码未更改) ...
                 ViewerSection("生活", entry.lifeLog)
                 ViewerSection("学习", entry.studyLog)
                 ViewerSection("杂事", entry.miscLog)
@@ -586,7 +559,6 @@ fun DiaryViewerScreen(
 
 @Composable
 fun ViewerSection(title: String, content: String?) {
-// ... (代码未更改) ...
     if (!content.isNullOrBlank()) {
         Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
@@ -596,7 +568,6 @@ fun ViewerSection(title: String, content: String?) {
 }
 @Composable
 fun ViewerStat(title: String, value: String) {
-// ... (代码未更改) ...
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -661,16 +632,14 @@ fun QueryListScreen(
     }
 }
 
-// --- 7. "曲线"图表页 (修改：重绘折线图) ---
+// --- 7. "曲线"图表页 (修改：颜色和背景) ---
 @Composable
 fun CurveScreen(
-// ... (代码未更改) ...
     entries: List<DiaryEntry>,
     onDateSelected: (LocalDate) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (entries.isEmpty()) {
-// ... (代码未更改) ...
         Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("暂无数据", style = MaterialTheme.typography.bodyLarge)
         }
@@ -682,49 +651,40 @@ fun CurveScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-// ... (代码未更改) ...
         Text(
             "心情曲线 (1-10)",
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(16.dp)
         )
-        // **修改：使用折线图**
         InternalLineChart(
-// ... (代码未更改) ...
             entries = entries,
             onDateSelected = onDateSelected,
             dataSelector = { it.moodScore.toFloat() },
             maxVal = 10f,
-            color = Color.Blue
+            color = ChartMood // **修改1：使用新的愉悦颜色**
         )
 
         Spacer(modifier = Modifier.height(24.dp))
-// ... (代码未更改) ...
         Divider()
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-// ... (代码未更改) ...
             "工作时长 (小时)",
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(16.dp)
         )
-        // **修改：使用折线图**
         InternalLineChart(
-// ... (代码未更改) ...
             entries = entries,
             onDateSelected = onDateSelected,
             dataSelector = { it.workDuration },
             maxVal = entries.maxOfOrNull { it.workDuration }?.coerceAtLeast(1f) ?: 1f,
-            color = Color.Red
+            color = ChartWork // **修改1：使用新的愉悦颜色**
         )
     }
 }
 
-// **修改：折线图 Composable**
 @Composable
 private fun InternalLineChart(
-// ... (代码未更改) ...
     entries: List<DiaryEntry>,
     onDateSelected: (LocalDate) -> Unit,
     dataSelector: (DiaryEntry) -> Float,
@@ -733,19 +693,16 @@ private fun InternalLineChart(
     modifier: Modifier = Modifier
 ) {
     val yAxisLeftPadding = 100f
-// ... (代码未更改) ...
     val xAxisBottomPadding = 100f
     val pointSpacing = 150f
-// ... (代码未更改) ...
     val chartWidth = (entries.size - 1).coerceAtLeast(0) * pointSpacing + yAxisLeftPadding * 2
     val chartScrollState = rememberScrollState()
 
     val density = LocalDensity.current
 
-    // **Bug 修复 2：使用更明确的初始化方式**
     val yAxisLabelPaint = remember(density) {
         Paint().apply {
-            this.color = android.graphics.Color.GRAY // 使用 native Int 颜色
+            this.color = android.graphics.Color.GRAY
             this.textAlign = Paint.Align.CENTER
             this.textSize = density.run { 12.sp.toPx() }
         }
@@ -768,7 +725,8 @@ private fun InternalLineChart(
             modifier = Modifier
                 .width(chartWidth.dp)
                 .fillMaxHeight()
-                .background(Color(0xFFFAFAFA))
+                // **修改1：使用透明背景**
+                .background(Color.Transparent)
                 .pointerInput(entries) {
                     detectTapGestures { offset ->
                         val xIndex = ((offset.x - yAxisLeftPadding) / pointSpacing).roundToInt()
@@ -779,12 +737,10 @@ private fun InternalLineChart(
                 }
         ) {
             val yBottom = size.height - xAxisBottomPadding
-// ... (代码未更改) ...
             val yTop = 0f
             val xStart = yAxisLeftPadding
 
             // 绘制 Y 轴
-// ... (代码未更改) ...
             drawLine(
                 color = Color.LightGray,
                 start = Offset(xStart, yTop),
@@ -793,7 +749,6 @@ private fun InternalLineChart(
             )
 
             // Y 轴标签
-// ... (代码未更改) ...
             val yLabelCount = 5
             (0..yLabelCount).forEach { i ->
                 val value = maxVal * i / yLabelCount
@@ -803,12 +758,11 @@ private fun InternalLineChart(
                     "%.1f".format(value),
                     xStart - 40,
                     y + 5,
-                    yAxisLabelPaint // <-- 使用独立的 Paint
+                    yAxisLabelPaint
                 )
             }
 
             // 绘制 X 轴
-// ... (代码未更改) ...
             drawLine(
                 color = Color.LightGray,
                 start = Offset(xStart, yBottom),
@@ -819,13 +773,11 @@ private fun InternalLineChart(
             val path = Path()
 
             entries.forEachIndexed { index, entry ->
-// ... (代码未更改) ...
                 val x = xStart + (index * pointSpacing)
                 val yValue = dataSelector(entry)
                 val y = yBottom - (yValue / maxVal) * (yBottom - yTop)
 
                 if (index == 0) {
-// ... (代码未更改) ...
                     path.moveTo(x, y)
                 } else {
                     path.lineTo(x, y)
@@ -833,15 +785,13 @@ private fun InternalLineChart(
                 drawCircle(color, radius = 8f, center = Offset(x, y))
 
                 drawContext.canvas.nativeCanvas.drawText(
-// ... (代码未更改) ...
                     entry.date.substring(5),
                     x,
                     yBottom + 40,
-                    xAxisLabelPaint // <-- 使用独立的 Paint
+                    xAxisLabelPaint
                 )
             }
 
-// ... (代码未更改) ...
             drawPath(path, color, style = Stroke(width = 4f))
         }
     }
@@ -852,7 +802,6 @@ private fun InternalLineChart(
 
 @Composable
 fun LogInput(title: String, content: String, onContentChange: (String) -> Unit) {
-// ... (代码未更改) ...
     OutlinedTextField(
         value = content,
         onValueChange = onContentChange,
@@ -864,7 +813,6 @@ fun LogInput(title: String, content: String, onContentChange: (String) -> Unit) 
 
 @Composable
 fun MoodScoreSelector(score: Int, onScoreChange: (Int) -> Unit) {
-// ... (代码未更改) ...
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(text = "心情分数: $score / 10", style = MaterialTheme. typography.titleMedium)
         Slider(

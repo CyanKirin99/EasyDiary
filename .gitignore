@@ -22,6 +22,7 @@
 bin/
 gen/
 out/
+res/
 
 # Gradle files
 .gradle/
@@ -29,6 +30,7 @@ build/
 
 # Local configuration files
 local.properties
+.idea/
 .idea/caches/
 .idea/libraries/
 .idea/modules.xml
